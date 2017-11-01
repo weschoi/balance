@@ -110,10 +110,27 @@ passport.use('local-login', new LocalStrategy({
     });
 }));
 
+// +passport.use('twitter', new TwitterStrategy({
+//  +  consumerKey: config.Twitter.consumerKey,
+//  +  consumerSecret: config.Twitter.consumerSecret,
+//  +  callbackURL: config.Twitter.callbackURL,
+//  +  userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true'
+//  +},
+//  +  (accessToken, refreshToken, profile, done) => getOrCreateOAuthProfile('twitter', profile, done))
+//  +);
+
+// passport.use('github', new GitHubStrategy({
+//   clientID: process.env.GITHUB_CLIENT_ID || config.GitHub.clientID,
+//   clientSecret: process.env.GITHUB_CLIENT_SECRET || config.GitHub.clientSecret,
+//   callbackURL: process.env.GITHUB_CALLBACK_URL || config.GitHub.callbackURL
+// },
+// (accessToken, refreshToken, profile, done) => getOrCreateOAuthProfile('github', accessToken, profile, done))
+// );
+
 passport.use('github', new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID || config.GitHub.clientID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET || config.GitHub.clientSecret,
-  callbackURL: process.env.GITHUB_CALLBACK_URL || config.GitHub.callbackURL
+  clientID: config.GitHub.clientID,
+  clientSecret: config.GitHub.clientSecret,
+  callbackURL: config.GitHub.callbackURL
 },
 (accessToken, refreshToken, profile, done) => getOrCreateOAuthProfile('github', accessToken, profile, done))
 );
@@ -126,6 +143,7 @@ const getOrCreateOAuthProfile = (type, accessToken, oauthProfile, done) => {
       if (oauthAccount) {
         throw oauthAccount;
       }
+      console.log(oauthAccount);
       if (!oauthProfile.emails || !oauthProfile.emails.length) {
         // GitHub users can set email address as private. The below request uses
         // their access token to retrieve the primary email address
@@ -151,6 +169,7 @@ const getOrCreateOAuthProfile = (type, accessToken, oauthProfile, done) => {
         .fetch();
     })
     .then(profile => {
+      console.log(profile);
       let profileInfo = {
         emailAddress: oauthProfile.emails[0].value,
         firstName: oauthProfile._json.name.split(' ')[0],
@@ -171,9 +190,11 @@ const getOrCreateOAuthProfile = (type, accessToken, oauthProfile, done) => {
       }).save();
     })
     .error(err => {
+      console.log(err)
       done(err, null);
     })
     .catch(oauthAccount => {
+      console.log('error!!!!');
       if (!oauthAccount) {
         throw oauthAccount;
       }
