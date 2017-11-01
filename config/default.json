@@ -2,9 +2,9 @@
   "knex": {
     "client": "postgresql",
     "connection": {
-      "database": "thesis",
+      "database": "balance",
       "user": "postgres",
-      "password": "postgres",
+      "password": "",
       "host": "localhost",
       "port": 5432
     },
@@ -20,10 +20,7 @@
       "directory": "db/seeds"
     }
   },
-
   "passport": {
-    "Google": {},
-    "Facebook": {},
-    "Twitter": {}
+    "GitHub": {}
   }
 }
